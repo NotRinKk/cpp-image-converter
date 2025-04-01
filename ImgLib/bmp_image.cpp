@@ -82,6 +82,10 @@ bool SaveBMP(const Path& file, const Image& image) {
 Image LoadBMP(const Path& file) {
     ifstream ifs(file, ios::binary);
 
+    if (!ifs) {
+        return {};
+    }
+
     BitmapFileHeader file_header;
     BitmapInfoHeader info_header;
 
@@ -104,6 +108,11 @@ Image LoadBMP(const Path& file) {
     ifs.seekg(file_header.data_offset, std::ios::beg);
 
     Image result(width, height, Color::Black());
+
+    if (!result || !ifs || width <= 0 || height <= 0) {
+        return {};
+    }
+
     std::vector<char> buff(stride);
 
     for (int y = height - 1; y >= 0; --y) {
@@ -126,3 +135,4 @@ Image LoadBMP(const Path& file) {
 }
 
 }  // namespace img_lib
+
